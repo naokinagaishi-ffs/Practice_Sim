@@ -51,6 +51,8 @@ namespace ImageSender
             this.imageInfo = new ImageInfo();
             this.filePath = null;
             this.buton_openFileDialog.Enabled = false;
+            this.btn_Whole.Enabled = false;
+            this.btn_Half.Enabled = true;
         }
 
         /// <summary>
@@ -144,6 +146,9 @@ namespace ImageSender
                 return false;
             }
 
+            //送る画像のサンプルなので、自動スケーリングでOK
+            pictureBox_SelectImage.SizeMode = PictureBoxSizeMode.StretchImage;
+            pictureBox_SelectImage.Image = System.Drawing.Image.FromFile(filePath);
             return true;
         }
 
@@ -165,13 +170,14 @@ namespace ImageSender
             {
                 string message = "通信が確立できています.......";
                 listBox_Log.Items.Add(message);
+                btn_Half.Enabled = false;
+                btn_Whole.Enabled = true;
                 btn_Half.BackColor = Color.Green;
-
             }
         }
 
         /// <summary>
-        /// 解除ボタン押下じのイベント。通信を切断
+        /// 解除ボタン押下時のイベント。通信を切断
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -180,6 +186,8 @@ namespace ImageSender
             this.connecter.Close();
             string message = "通信を切断しました";
             listBox_Log.Items.Add(message);
+            btn_Half.Enabled = true;
+            btn_Whole.Enabled = true;
             btn_Half.BackColor = Color.Gray;
             btn_Whole.BackColor = Color.Gray;
         }
@@ -191,27 +199,33 @@ namespace ImageSender
         /// <param name="e"></param>
         private void btn_Whole_Click(object sender, EventArgs e)
         {
+            btn_Whole.Enabled = false;
             if(!ResizeImage())
             {
                 string message = "画像のリサイズに失敗ました";
                 listBox_Log.Items.Add(message);
                 btn_Whole.BackColor = Color.Red;
+                this.connecter.Close();
                 return;
             }
            if (! this.connecter.SendImage(this.SendImage))
             {
                 string message = "画像を送信できませんでした。";
                 listBox_Log.Items.Add(message);
+                this.connecter.Close();
                 btn_Whole.BackColor = Color.Red;
             }
             else
             {
                 string message = "画像の送信に成功しました。";
                 listBox_Log.Items.Add(message);
-                btn_Whole.BackColor = Color.Green;
             }
         }
 
+        /// <summary>
+        /// 画像送信時に、指定の大きさに画像をリサイズする関数
+        /// </summary>
+        /// <returns></returns>
         private bool ResizeImage()
         {
             if(( string.IsNullOrEmpty(this.filePath)) ||(! File.Exists(this.filePath)))
@@ -222,11 +236,16 @@ namespace ImageSender
             }
             int resizeWidth = this.imageInfo.ImageWidth;
             int resizeHeight = this.imageInfo.ImageHeight;
-            this.SendImage = new Bitmap(resizeWidth, resizeHeight);
-            Graphics g = Graphics.FromImage(this.SendImage);
-            g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-            g.DrawImage(this.SendImage, 0, 0, resizeWidth, resizeHeight);
-            g.Dispose();
+            //this.SendImage = new Bitmap(resizeWidth, resizeHeight);
+            //Graphics g = Graphics.FromImage(this.SendImage);
+            //g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+            //g.DrawImage(this.SendImage, 0, 0, resizeWidth, resizeHeight);
+
+            var buf = new Bitmap(this.filePath);
+            this.SendImage = new Bitmap(buf, resizeWidth, resizeHeight);
+
+
+            //g.Dispose();
 
             return true;
         }
