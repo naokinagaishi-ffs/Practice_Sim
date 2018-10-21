@@ -236,17 +236,8 @@ namespace ImageSender
             }
             int resizeWidth = this.imageInfo.ImageWidth;
             int resizeHeight = this.imageInfo.ImageHeight;
-            //this.SendImage = new Bitmap(resizeWidth, resizeHeight);
-            //Graphics g = Graphics.FromImage(this.SendImage);
-            //g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-            //g.DrawImage(this.SendImage, 0, 0, resizeWidth, resizeHeight);
-
             var buf = new Bitmap(this.filePath);
             this.SendImage = new Bitmap(buf, resizeWidth, resizeHeight);
-
-
-            //g.Dispose();
-
             return true;
         }
     }
