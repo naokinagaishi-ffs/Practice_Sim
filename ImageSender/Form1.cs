@@ -56,7 +56,7 @@ namespace ImageSender
         /// <summary>
         /// 送るサイズにトリミングされたImage
         /// </summary>
-        public Image SendImage { get; set; }
+        public Bitmap SendImage { get; set; }
 
         /// <summary>
         /// 送る画像のファイルパス
@@ -91,7 +91,6 @@ namespace ImageSender
             {
                 this.buton_openFileDialog.Enabled = true;
             }
-
         }
 
         /// <summary>
@@ -145,9 +144,6 @@ namespace ImageSender
                 return false;
             }
 
-            //送る画像のサンプルなので、自動スケーリングでOK
-            pictureBox_SelectImage.SizeMode = PictureBoxSizeMode.StretchImage;
-            pictureBox_SelectImage.Image = System.Drawing.Image.FromFile(filePath);
             return true;
         }
 
@@ -195,7 +191,14 @@ namespace ImageSender
         /// <param name="e"></param>
         private void btn_Whole_Click(object sender, EventArgs e)
         {
-           if(! this.connecter.SendImage(this.imageInfo))
+            if(!ResizeImage())
+            {
+                string message = "画像のリサイズに失敗ました";
+                listBox_Log.Items.Add(message);
+                btn_Whole.BackColor = Color.Red;
+                return;
+            }
+           if (! this.connecter.SendImage(this.SendImage))
             {
                 string message = "画像を送信できませんでした。";
                 listBox_Log.Items.Add(message);
@@ -207,6 +210,25 @@ namespace ImageSender
                 listBox_Log.Items.Add(message);
                 btn_Whole.BackColor = Color.Green;
             }
+        }
+
+        private bool ResizeImage()
+        {
+            if(( string.IsNullOrEmpty(this.filePath)) ||(! File.Exists(this.filePath)))
+            {
+                string message = "ファイルパスを確認してください。";
+                listBox_Log.Items.Add(message);
+                return false;
+            }
+            int resizeWidth = this.imageInfo.ImageWidth;
+            int resizeHeight = this.imageInfo.ImageHeight;
+            this.SendImage = new Bitmap(resizeWidth, resizeHeight);
+            Graphics g = Graphics.FromImage(this.SendImage);
+            g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+            g.DrawImage(this.SendImage, 0, 0, resizeWidth, resizeHeight);
+            g.Dispose();
+
+            return true;
         }
     }
 }

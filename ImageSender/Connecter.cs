@@ -68,8 +68,8 @@ namespace ImageSender
                 return false;
             }
 
-            //try
-            //{
+            try
+            {
                 byte[] buf = ImageToByteArray(srcImage);
                 byte[] tbuf = new byte[buf.Length + 1];
                 tbuf[0] = (byte)'i';
@@ -78,11 +78,11 @@ namespace ImageSender
                     tbuf[i] = buf[i - 1];
                 }
                 netStream.Write(tbuf, 0, tbuf.Length);
-            //}
-            //catch
-            //{
-            //    return false;
-            //}
+            }
+            catch
+            {
+                return false;
+            }
             return true;
         }
 
