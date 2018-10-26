@@ -1,9 +1,9 @@
 ﻿//
 //画像の情報をハンドリングするクラス
 //
-namespace ImageSender
+namespace Simulater.Model
 {
-    class ImageInfo
+    public class ImageInfo
     {
         /// <summary>
         /// コンストラクタ
@@ -13,6 +13,7 @@ namespace ImageSender
             this.ImageWidth = 0;
             this.PixelHeight = 0.15;
             this.PixelWidth = 0.15;
+            this.FilePath = null;
         }
 
         /// <summary>
@@ -28,12 +29,17 @@ namespace ImageSender
         /// <summary>
         /// ピクセルの縦幅(mm)
         /// </summary>
-        public  double PixelHeight { get; set; }
+        public double PixelHeight { get; set; }
 
         /// <summary>
         /// ピクセルの横幅(mm)
         /// </summary>
         public double PixelWidth { get; set; }
+
+        /// <summary>
+        /// 画像のファイルパス
+        /// </summary>
+        public string FilePath { get; set; }
     }
 
 

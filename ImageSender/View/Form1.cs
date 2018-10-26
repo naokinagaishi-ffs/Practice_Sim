@@ -1,37 +1,44 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
+﻿//
+//Simulaterの画面を実装するクラス。画面は一つのみで、今後増える予定なし
+//
+using System;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using System.IO;
-using System.Net.Sockets;
+using System.Windows.Forms;
+using Simulater.Model;
+using Simulater.Application;
+using System.Collections.Generic;
 
-
-namespace ImageSender
+namespace Simulater.View
 {
     public partial class Form1 : Form
     {
-        ImageInfo imageInfo;
+        //フィールド変数
+        private ImageInfo imageInfo;
         private Connecter connecter;
-
-        /// <summary>
-        /// １インチ当たりの長さmm
-        /// </summary>
-        const double MMperINCHI = 25.4;
+        private SimulaterApplication simulaterApp;
+        private Dictionary<string, ImageSize> imageSizeDictionary;
 
         /// <summary>
         /// IPアドレス。ループバックなので、127.0.0.1で固定。
         /// </summary>
         const string IPADDRESS = "127.0.0.1";
-        
+
         /// <summary>
         /// ポートナンバー。とりあえず9000で固定
         /// </summary>
         const int PORTNUMBER = 9000;
+
+        /// <summary>
+        /// 画像サイズの列挙値
+        /// </summary>
+        public enum ImageSize
+        {
+           MUTSUGIRI   = 0,     //四切
+           YOTSUGIRI   = 1,      //六切
+           DIAKAKU      = 2,      //大角
+           HANSETSU    = 3,     //半切
+        }
 
         /// <summary>
         /// コンストラクタ
@@ -40,7 +47,7 @@ namespace ImageSender
         {
             InitializeComponent();
             OriginalInitialize();
-         }
+        }
 
         /// <summary>
         /// 自動生成以外のコードの初期化
@@ -49,21 +56,20 @@ namespace ImageSender
         {
             this.connecter = new Connecter();
             this.imageInfo = new ImageInfo();
-            this.filePath = null;
+            this.simulaterApp = new SimulaterApplication(this.imageInfo);
             this.buton_openFileDialog.Enabled = false;
             this.btn_Whole.Enabled = false;
             this.btn_Half.Enabled = true;
+
+            //combBoxのプルダウンの文字列と,ImageSizeを関連付けるため。
+            this.imageSizeDictionary = new Dictionary<string, ImageSize>
+            {
+                { "8x10", ImageSize.MUTSUGIRI},
+                {"10x14",ImageSize.YOTSUGIRI },
+                {"14x14",ImageSize.DIAKAKU},
+                {"14x17",ImageSize.HANSETSU }
+            };
         }
-
-        /// <summary>
-        /// 送るサイズにトリミングされたImage
-        /// </summary>
-        public Bitmap SendImage { get; set; }
-
-        /// <summary>
-        /// 送る画像のファイルパス
-        /// </summary>
-        private string filePath;
 
         /// <summary>
         /// ファイルパスを取得し画像をセットするイベント
@@ -75,9 +81,9 @@ namespace ImageSender
             DialogResult dr = openFileDialog1.ShowDialog();
             if (dr == System.Windows.Forms.DialogResult.OK)
             {
-                this.filePath = openFileDialog1.FileName;
-                textBox_filePath.Text = Path.GetFileName( this.filePath);
-                SetSelectImage(this.filePath);
+                this.imageInfo.FilePath = openFileDialog1.FileName;
+                textBox_filePath.Text = Path.GetFileName(this.imageInfo.FilePath);
+                SetSelectImage(this.imageInfo.FilePath);
             }
         }
 
@@ -88,59 +94,27 @@ namespace ImageSender
         /// <param name="e"></param>
         private void comboBox_ImageSize_SelectedIndexChanged(object sender, EventArgs e)
         {
-            string selectSize = comboBox_ImageSize.Text.ToString();
-            if (SetImageSize(selectSize))
+            string textValue = comboBox_ImageSize.Text.ToString();
+            ImageSize size = this.imageSizeDictionary[textValue];
+            if (simulaterApp.SetImageSize(size))
             {
                 this.buton_openFileDialog.Enabled = true;
             }
-        }
-
-        /// <summary>
-        /// ピクセル数に変換
-        /// </summary>
-        /// <param name="selectSize"></param>
-        private bool SetImageSize(string selectSize)
-        {
-            if(selectSize == "8 x 10")
-            {
-                this.imageInfo.ImageWidth = (ushort)(8 * MMperINCHI / this.imageInfo.PixelWidth);
-                this.imageInfo.ImageHeight = (ushort)(10 * MMperINCHI / this.imageInfo.PixelHeight);
-            }
-           else if(selectSize == "10 x 14")
-            {
-                this.imageInfo.ImageWidth = (ushort)(10 * MMperINCHI / this.imageInfo.PixelWidth);
-                this.imageInfo.ImageHeight = (ushort)(14 * MMperINCHI / this.imageInfo.PixelHeight);
-            }
-            else if(selectSize == "4 x 17")
-            {
-                this.imageInfo.ImageWidth = (ushort)(14 * MMperINCHI / this.imageInfo.PixelWidth);
-                this.imageInfo.ImageHeight = (ushort)(17 * MMperINCHI / this.imageInfo.PixelHeight);
-            }
-            else if(selectSize =="17 x 17")
-            {
-                this.imageInfo.ImageWidth = (ushort)(17 * MMperINCHI / this.imageInfo.PixelWidth);
-                this.imageInfo.ImageHeight = (ushort)(17 * MMperINCHI / this.imageInfo.PixelHeight);
-            }
             else
             {
-                MessageBox.Show("画像サイズに誤りがあるか、設定さていません");
-                this.imageInfo.ImageWidth = 0;
-                this.imageInfo.ImageHeight = 0;
-                return false;
+                //TODO::異常系の画面遷移を実装
             }
-
-                return true;
         }
 
         /// <summary>
-        /// ファイルパスで指定された画像をpictureBoxにセットするメソッド
+        /// ファイルパスで指定された画像のサンプルをpictureBoxにセットするメソッド
         /// </summary>
         /// <param name="filePath"></param>
         /// <returns></returns>
         private bool SetSelectImage(string filePath)
         {
-            if( (string.IsNullOrEmpty(filePath)) ||
-                (! File.Exists(filePath)))
+            if ((string.IsNullOrEmpty(filePath)) ||
+                (!File.Exists(filePath)))
             {
                 MessageBox.Show("ファイルパスが正しくありません");
                 return false;
@@ -159,7 +133,7 @@ namespace ImageSender
         /// <param name="e"></param>
         private void btn_Half_Click(object sender, EventArgs e)
         {
-           if(! this.connecter.Connect(IPADDRESS, PORTNUMBER))
+            if (!this.connecter.Connect(IPADDRESS, PORTNUMBER))
             {
                 string message = "通信が確立できませんでした。";
                 listBox_Log.Items.Add(message);
@@ -200,45 +174,37 @@ namespace ImageSender
         private void btn_Whole_Click(object sender, EventArgs e)
         {
             btn_Whole.Enabled = false;
-            if(!ResizeImage())
+            Bitmap bitMap = this.simulaterApp.ResizeImage(this.imageInfo.FilePath);
+            if (bitMap == null)
             {
                 string message = "画像のリサイズに失敗ました";
-                listBox_Log.Items.Add(message);
+                SwitchInitialize(message);
                 btn_Whole.BackColor = Color.Red;
-                this.connecter.Close();
                 return;
             }
-           if (! this.connecter.SendImage(this.SendImage))
+            if (!this.connecter.SendImage(bitMap))
             {
                 string message = "画像を送信できませんでした。";
-                listBox_Log.Items.Add(message);
-                this.connecter.Close();
+                SwitchInitialize(message);
                 btn_Whole.BackColor = Color.Red;
             }
             else
             {
                 string message = "画像の送信に成功しました。";
-                listBox_Log.Items.Add(message);
+                SwitchInitialize(message);
+                btn_Whole.BackColor = Color.Gray;
+
             }
         }
 
         /// <summary>
-        /// 画像送信時に、指定の大きさに画像をリサイズする関数
+        /// 通信を切断し、ログを出力し、デッドマンスイッチを初期状態に戻す
         /// </summary>
-        /// <returns></returns>
-        private bool ResizeImage()
+        private void SwitchInitialize(string msg)
         {
-            if(( string.IsNullOrEmpty(this.filePath)) ||(! File.Exists(this.filePath)))
-            {
-                string message = "ファイルパスを確認してください。";
-                listBox_Log.Items.Add(message);
-                return false;
-            }
-            int resizeWidth = this.imageInfo.ImageWidth;
-            int resizeHeight = this.imageInfo.ImageHeight;
-            var buf = new Bitmap(this.filePath);
-            this.SendImage = new Bitmap(buf, resizeWidth, resizeHeight);
-            return true;
+            listBox_Log.Items.Add(msg);
+            this.connecter.Close();
         }
     }
 }
+    

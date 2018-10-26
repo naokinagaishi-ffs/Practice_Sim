@@ -10,7 +10,7 @@ using System.Net.Sockets;
 using System.Drawing;
 
 
-namespace ImageSender
+namespace Simulater
 {
     class Connecter
     {
@@ -81,6 +81,7 @@ namespace ImageSender
             }
             catch
             {
+                //TODO::ログの書き込み
                 return false;
             }
             return true;

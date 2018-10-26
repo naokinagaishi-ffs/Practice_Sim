@@ -1,4 +1,4 @@
-﻿namespace ImageSender
+﻿namespace Simulater.View
 {
     partial class Form1
     {
@@ -79,10 +79,10 @@
             // 
             this.comboBox_ImageSize.FormattingEnabled = true;
             this.comboBox_ImageSize.Items.AddRange(new object[] {
-            "8 x 10",
-            "10 x 14",
-            "14 x 17",
-            "17 x 17"});
+            "8x10",
+            "10 x14",
+            "14x14",
+            "14x17"});
             this.comboBox_ImageSize.Location = new System.Drawing.Point(154, 80);
             this.comboBox_ImageSize.Name = "comboBox_ImageSize";
             this.comboBox_ImageSize.Size = new System.Drawing.Size(199, 26);
