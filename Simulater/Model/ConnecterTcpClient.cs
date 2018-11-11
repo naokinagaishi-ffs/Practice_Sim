@@ -8,17 +8,31 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Net.Sockets;
 using System.Drawing;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 
-
-namespace Simulater
+namespace Simulater.Model
 {
-    class Connecter
+    public class ConnecterTcpClient
     {
-        public Connecter()
+        /// <summary>
+        /// コンストラクタ
+        /// </summary>
+        public ConnecterTcpClient()
         {
-            this.socket = new TcpClient();
             this.netStream = null;
         }
+
+
+        /// <summary>
+        /// IPアドレス。ループバックなので、127.0.0.1で固定。
+        /// </summary>
+        private const string IPADDRESS = "127.0.0.1";
+
+        /// <summary>
+        /// ポートナンバー。とりあえず9000で固定
+        /// </summary>
+        private const int PORTNUMBER = 9000;
 
         /// <summary>
         /// privateメンバ変数
@@ -32,13 +46,13 @@ namespace Simulater
         /// <param name="IPAddress"></param>
         /// <param name="PortNumber"></param>
         /// <returns></returns>
-        public bool Connect(string IPAddress, int PortNumber = 9000)
+        public bool Connect()
         {
             try
             {
-                socket = new TcpClient();
-                socket.Connect(IPAddress, PortNumber);
-                netStream = socket.GetStream();
+                this.socket = new TcpClient();
+                this.socket.Connect(IPADDRESS, PORTNUMBER);
+                this.netStream = socket.GetStream();
             }
             catch (Exception e)
             {
@@ -61,23 +75,19 @@ namespace Simulater
         /// </summary>
         /// <param name="image"></param>
         /// <returns></returns>
-        public bool SendImage(Image srcImage)
+        public bool SendImage(ImageInfo imageInfo)
         {
-            if (srcImage == null)
+            if ((imageInfo == null) || (this.netStream == null))
             {
                 return false;
             }
 
             try
             {
-                byte[] buf = ImageToByteArray(srcImage);
-                byte[] tbuf = new byte[buf.Length + 1];
-                tbuf[0] = (byte)'i';
-                for (int i = 1; i < buf.Length + 1; i++)
-                {
-                    tbuf[i] = buf[i - 1];
-                }
-                netStream.Write(tbuf, 0, tbuf.Length);
+                IFormatter formatter = new BinaryFormatter();
+                formatter.Serialize(this.netStream, imageInfo);
+                //this.Close();
+                
             }
             catch
             {
@@ -87,16 +97,17 @@ namespace Simulater
             return true;
         }
 
-        /// <summary>
-        /// image型をbytel型配列に変換
-        /// </summary>
-        /// <param name="image"></param>
-        /// <returns></returns>
-        private byte[] ImageToByteArray(Image image)
-        {
-            ImageConverter imgconv = new ImageConverter();
-            byte[] b = (byte[])imgconv.ConvertTo(image, typeof(byte[]));
-            return b;
-        }
+        //    /// <summary>
+        //    /// image型をbytel型配列に変換
+        //    /// </summary>
+        //    /// <param name="image"></param>
+        //    /// <returns></returns>
+        //    private byte[] ImageToByteArray()
+        //    {
+        //        ImageConverter imgconv = new ImageConverter();
+        //        byte[] b = (byte[])imgconv.ConvertTo(this.imageInfo, typeof(byte[]));
+        //        return b;
+        //    }
+        //}
     }
 }

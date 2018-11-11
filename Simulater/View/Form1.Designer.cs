@@ -80,7 +80,7 @@
             this.comboBox_ImageSize.FormattingEnabled = true;
             this.comboBox_ImageSize.Items.AddRange(new object[] {
             "8x10",
-            "10 x14",
+            "10x14",
             "14x14",
             "14x17"});
             this.comboBox_ImageSize.Location = new System.Drawing.Point(154, 80);

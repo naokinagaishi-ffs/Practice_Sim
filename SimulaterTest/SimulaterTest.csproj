@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{08A1589A-4DA0-4383-BF54-BDB19A16EA53}</ProjectGuid>
+    <ProjectGuid>{A92EA81A-40AA-456E-AB07-FD6583EBFE17}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SimulaterTest</RootNamespace>
@@ -31,9 +31,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="nunit.framework">
-      <HintPath>..\..\..\..\NUnit.Framework-3.10.1\bin\net20\nunit.framework.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -48,7 +45,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ImageSender\Simulater.csproj">
+    <ProjectReference Include="..\Simulater\Simulater.csproj">
       <Project>{2b3d2dc4-58ba-4294-bdd3-ad3a9256b25b}</Project>
       <Name>Simulater</Name>
     </ProjectReference>

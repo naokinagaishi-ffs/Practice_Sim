@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28010.2036
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simulater", "ImageSender\Simulater.csproj", "{2B3D2DC4-58BA-4294-BDD3-AD3A9256B25B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simulater", "Simulater\Simulater.csproj", "{2B3D2DC4-58BA-4294-BDD3-AD3A9256B25B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimulaterTest", "SimulaterTest\SimulaterTest.csproj", "{08A1589A-4DA0-4383-BF54-BDB19A16EA53}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimulaterTest", "SimulaterTest\SimulaterTest.csproj", "{A92EA81A-40AA-456E-AB07-FD6583EBFE17}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,14 +23,14 @@ Global
 		{2B3D2DC4-58BA-4294-BDD3-AD3A9256B25B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2B3D2DC4-58BA-4294-BDD3-AD3A9256B25B}.Release|x86.ActiveCfg = Release|x86
 		{2B3D2DC4-58BA-4294-BDD3-AD3A9256B25B}.Release|x86.Build.0 = Release|x86
-		{08A1589A-4DA0-4383-BF54-BDB19A16EA53}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{08A1589A-4DA0-4383-BF54-BDB19A16EA53}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{08A1589A-4DA0-4383-BF54-BDB19A16EA53}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{08A1589A-4DA0-4383-BF54-BDB19A16EA53}.Debug|x86.Build.0 = Debug|Any CPU
-		{08A1589A-4DA0-4383-BF54-BDB19A16EA53}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{08A1589A-4DA0-4383-BF54-BDB19A16EA53}.Release|Any CPU.Build.0 = Release|Any CPU
-		{08A1589A-4DA0-4383-BF54-BDB19A16EA53}.Release|x86.ActiveCfg = Release|Any CPU
-		{08A1589A-4DA0-4383-BF54-BDB19A16EA53}.Release|x86.Build.0 = Release|Any CPU
+		{A92EA81A-40AA-456E-AB07-FD6583EBFE17}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A92EA81A-40AA-456E-AB07-FD6583EBFE17}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A92EA81A-40AA-456E-AB07-FD6583EBFE17}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A92EA81A-40AA-456E-AB07-FD6583EBFE17}.Debug|x86.Build.0 = Debug|Any CPU
+		{A92EA81A-40AA-456E-AB07-FD6583EBFE17}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A92EA81A-40AA-456E-AB07-FD6583EBFE17}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A92EA81A-40AA-456E-AB07-FD6583EBFE17}.Release|x86.ActiveCfg = Release|Any CPU
+		{A92EA81A-40AA-456E-AB07-FD6583EBFE17}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

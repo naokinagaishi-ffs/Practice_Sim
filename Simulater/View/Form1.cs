@@ -15,19 +15,13 @@ namespace Simulater.View
     {
         //フィールド変数
         private ImageInfo imageInfo;
-        private Connecter connecter;
-        private SimulaterApplication simulaterApp;
+        //private ConnectTcpClient connecter;
+        //private SimulaterApplication simulaterApp;
         private Dictionary<string, ImageSize> imageSizeDictionary;
+        private ImageController imageController;
+        private ConnectController connectController;
+        private string filePath;
 
-        /// <summary>
-        /// IPアドレス。ループバックなので、127.0.0.1で固定。
-        /// </summary>
-        const string IPADDRESS = "127.0.0.1";
-
-        /// <summary>
-        /// ポートナンバー。とりあえず9000で固定
-        /// </summary>
-        const int PORTNUMBER = 9000;
 
         /// <summary>
         /// 画像サイズの列挙値
@@ -54,9 +48,10 @@ namespace Simulater.View
         /// </summary>
         private void OriginalInitialize()
         {
-            this.connecter = new Connecter();
+            //this.connecter = new ConnectTcpClient();
             this.imageInfo = new ImageInfo();
-            this.simulaterApp = new SimulaterApplication(this.imageInfo);
+            this.imageController = new ImageController(this.imageInfo);
+            this.connectController = new ConnectController();
             this.buton_openFileDialog.Enabled = false;
             this.btn_Whole.Enabled = false;
             this.btn_Half.Enabled = true;
@@ -81,9 +76,10 @@ namespace Simulater.View
             DialogResult dr = openFileDialog1.ShowDialog();
             if (dr == System.Windows.Forms.DialogResult.OK)
             {
-                this.imageInfo.FilePath = openFileDialog1.FileName;
-                textBox_filePath.Text = Path.GetFileName(this.imageInfo.FilePath);
-                SetSelectImage(this.imageInfo.FilePath);
+                string filePath = string.Empty;
+                this.filePath = openFileDialog1.FileName;
+                textBox_filePath.Text = Path.GetFileName(filePath);
+                SetSelectImage(this.filePath);
             }
         }
 
@@ -96,12 +92,13 @@ namespace Simulater.View
         {
             string textValue = comboBox_ImageSize.Text.ToString();
             ImageSize size = this.imageSizeDictionary[textValue];
-            if (simulaterApp.SetImageSize(size))
+            if (this.imageController.SetImageSize(size))
             {
                 this.buton_openFileDialog.Enabled = true;
             }
             else
             {
+                MessageBox.Show("画像の大きさの設定に失敗しました");//とりあえず
                 //TODO::異常系の画面遷移を実装
             }
         }
@@ -133,7 +130,7 @@ namespace Simulater.View
         /// <param name="e"></param>
         private void btn_Half_Click(object sender, EventArgs e)
         {
-            if (!this.connecter.Connect(IPADDRESS, PORTNUMBER))
+            if (!this.connectController.Connect())
             {
                 string message = "通信が確立できませんでした。";
                 listBox_Log.Items.Add(message);
@@ -157,7 +154,7 @@ namespace Simulater.View
         /// <param name="e"></param>
         private void btn_Clear_Click(object sender, EventArgs e)
         {
-            this.connecter.Close();
+            this.connectController.Close();
             string message = "通信を切断しました";
             listBox_Log.Items.Add(message);
             btn_Half.Enabled = true;
@@ -174,15 +171,15 @@ namespace Simulater.View
         private void btn_Whole_Click(object sender, EventArgs e)
         {
             btn_Whole.Enabled = false;
-            Bitmap bitMap = this.simulaterApp.ResizeImage(this.imageInfo.FilePath);
-            if (bitMap == null)
+            this.imageInfo.Bitmap= this.imageController.ResizeImage(this.filePath);
+            if (null == this.imageInfo.Bitmap)
             {
                 string message = "画像のリサイズに失敗ました";
                 SwitchInitialize(message);
                 btn_Whole.BackColor = Color.Red;
                 return;
             }
-            if (!this.connecter.SendImage(bitMap))
+            if (!this.connectController.SendImage(this.imageInfo))
             {
                 string message = "画像を送信できませんでした。";
                 SwitchInitialize(message);
@@ -203,7 +200,7 @@ namespace Simulater.View
         private void SwitchInitialize(string msg)
         {
             listBox_Log.Items.Add(msg);
-            this.connecter.Close();
+            this.connectController.Close();
         }
     }
 }

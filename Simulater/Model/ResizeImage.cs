@@ -24,13 +24,11 @@ namespace Simulater.Model
         {
             if ((string.IsNullOrEmpty(filePath)) || (!File.Exists(filePath)))
             {
-                //string message = "ファイルパスを確認してください。";
-                ////listBox_Log.Items.Add(message);
                 return null;
             }
             ushort resizeWidth = this.imageInfo.ImageWidth;
             ushort resizeHeight = this.imageInfo.ImageHeight;
-            var buf = new Bitmap(this.imageInfo.FilePath);
+            var buf = new Bitmap(filePath);
             return new Bitmap(buf, resizeWidth, resizeHeight);
         }
     }

@@ -1,8 +1,13 @@
 ﻿//
 //画像の情報をハンドリングするクラス
 //
+using System;
+using System.Drawing;
+
 namespace Simulater.Model
 {
+
+    [Serializable()]
     public class ImageInfo
     {
         /// <summary>
@@ -13,7 +18,7 @@ namespace Simulater.Model
             this.ImageWidth = 0;
             this.PixelHeight = 0.15;
             this.PixelWidth = 0.15;
-            this.FilePath = null;
+            this.Bitmap = null;
         }
 
         /// <summary>
@@ -27,19 +32,20 @@ namespace Simulater.Model
         public ushort ImageHeight { get; set; }
 
         /// <summary>
-        /// ピクセルの縦幅(mm)
+        /// ピクセルの縦幅(mm)のプロパティ
         /// </summary>
         public double PixelHeight { get; set; }
 
         /// <summary>
-        /// ピクセルの横幅(mm)
+        /// ピクセルの横幅(mm)のプロパティ
         /// </summary>
         public double PixelWidth { get; set; }
 
+
         /// <summary>
-        /// 画像のファイルパス
+        /// 画像のBitMapのプロパティ
         /// </summary>
-        public string FilePath { get; set; }
+        public Bitmap Bitmap { get; set; }
     }
 
 

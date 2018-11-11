@@ -11,7 +11,21 @@ using System.Threading.Tasks;
 //
 namespace Simulater.Common
 {
-    class ErroeHandler
+    static public class ErroeHandler
     {
+
+        static void WriteLogBoth(string mes)
+        {
+
+        }
+
+        public static string 
+        {
+            set
+            {
+                WriteLogBoth(string value)
+            }
+        }
+        
     }
 }

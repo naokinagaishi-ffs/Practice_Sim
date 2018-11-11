@@ -4,10 +4,9 @@ using System.Drawing;
 namespace Simulater.Application
 {
     /// <summary>
-    /// ViewとModelは、このSimulaterApplicationに依存する。
     /// Modelにロジックが追加されると、このクラスのメンバも追加される。
     /// </summary>
-    public class SimulaterApplication
+    public class ImageController
     {
         //フィールドの宣言
         private  ResizeImage imageResize;
@@ -16,10 +15,11 @@ namespace Simulater.Application
         /// <summary>
         /// コンストラクタ
         /// </summary>
-        /// <param name="imageInfo">ImageInfo　画像情報をハンドリングしている。</param>
-        public SimulaterApplication(ImageInfo imageInfo)
+        /// <param name="imageInfo"></param>
+        public ImageController(ImageInfo imageInfo)
         {
             this.imageResize = new ResizeImage(imageInfo);
+            this.setImageSize = new SetImageSize(imageInfo);
         }
 
         /// <summary>

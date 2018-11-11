@@ -73,9 +73,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Application\SimulaterApplication.cs" />
+    <Compile Include="Application\ConnectController.cs" />
+    <Compile Include="Application\ImageController.cs" />
     <Compile Include="Common\ErroeHandler.cs" />
-    <Compile Include="InfraStructure\Connecter.cs" />
+    <Compile Include="InfraStructure\InitializeFileAccesser.cs" />
+    <Compile Include="Model\ConnecterTcpClient.cs" />
     <Compile Include="Model\SetImageSize.cs" />
     <Compile Include="View\Form1.cs">
       <SubType>Form</SubType>
@@ -117,6 +119,7 @@
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
